@@ -26,29 +26,32 @@ function ChatScreen({ chat, messages }) {
       .orderBy("timestamp", "asc")
   );
   const [input, setInput] = useState("");
-    const [recipientSnapshot] = useCollection(
-      db.collection('users').where('email', '==', getRecipientEmail(chat.users, user))
-    )
+  const [recipientSnapshot] = useCollection(
+    db
+      .collection("users")
+      .where("email", "==", getRecipientEmail(chat.users, user))
+  );
   const showMessages = () => {
-    
-    if(messagesSnapshot) {
-      
-      return messagesSnapshot.docs.map((message) => (
-        console.log("User passed", message.data()),
-        <Message
-          key={message.data().id}
-          user={message.data().user}
-          message={{
-            ...message.data(),
-            timestamp: message.data().timestamp?.toDate().getTime()
-          }}
-        />
-     ) )
+    if (messagesSnapshot) {
+      return messagesSnapshot.docs.map(
+        (message) => (
+          console.log("User passed", message.data()),
+          (
+            <Message
+              key={message.data().id}
+              user={message.data().user}
+              message={{
+                ...message.data(),
+                timestamp: message.data().timestamp?.toDate().getTime(),
+              }}
+            />
+          )
+        )
+      );
     } else {
-        return JSON.parse(messages).map(message => (
-          
-            <Message key={message.id} user={message.user} message={message} />
-        ))
+      return JSON.parse(messages).map((message) => (
+        <Message key={message.id} user={message.user} message={message} />
+      ));
     }
   };
 
@@ -56,12 +59,10 @@ function ChatScreen({ chat, messages }) {
     endOfMessagesRef.current.scrollIntoView({
       behavior: "smooth",
       block: "center",
-    })
-  }
+    });
+  };
 
   const sendMesssage = (e) => {
-   
-
     // Update the last seen
     db.collection("users").doc(user.uid).set(
       {
@@ -76,51 +77,59 @@ function ChatScreen({ chat, messages }) {
       user: user.email,
       photoURL: user.photoURL,
     });
-    
+
     setInput("");
     scrollToBottom();
   };
 
   const recipient = recipientSnapshot?.docs?.[0]?.data();
   const RecipientEmail = getRecipientEmail(chat.users, user);
-  console.log('Recipient Info',recipientSnapshot)
+  console.log("Recipient Info", recipientSnapshot);
   return (
     <Container>
-      <Header>
-        {recipient ? (<Avatar src={recipient?.photoURL} />) : (<Avatar >{RecipientEmail[0]}</Avatar>)}
-        
 
+      <Header>
+      <ResponsibleDesign>
+        {recipient ? (
+          <Avatar src={recipient?.photoURL} />
+        ) : (
+          <Avatar>{RecipientEmail[0]}</Avatar>
+        )}
+      </ResponsibleDesign>
         <HeaderInformation>
           <h3>{RecipientEmail}</h3>
           {recipientSnapshot ? (
-
-            <p>Last active: {' '}
-            {recipient?.lastSeen?.toDate() ? (
-              <TimeAgo datetime={recipient?.lastSeen?.toDate()}/>
-            ) : "Unavailable"}
-          </p>
-          ): (
+            <p>
+              Last active:{" "}
+              {recipient?.lastSeen?.toDate() ? (
+                <TimeAgo datetime={recipient?.lastSeen?.toDate()} />
+              ) : (
+                "Unavailable"
+              )}
+            </p>
+          ) : (
             <p>Loading Last active</p>
           )}
-         
         </HeaderInformation>
+        <ResponsibleDesign>
         <HeaderIcons>
           <IconButton>
             <AttachFile />
             <MoreVert />
           </IconButton>
         </HeaderIcons>
+        </ResponsibleDesign>
       </Header>
 
       <MessageContainer>
         {showMessages()}
-        <EndOfMessages ref={endOfMessagesRef}/>
+        <EndOfMessages ref={endOfMessagesRef} />
       </MessageContainer>
 
       <InputContainer>
-      <EmoteContainer>
-        <InsertEmoticon />
-      </EmoteContainer>
+        <ResponsibleDesign>
+          <InsertEmoticon />
+        </ResponsibleDesign>
         <Input value={input} onChange={(e) => setInput(e.target.value)} />
         <button
           hidden
@@ -128,9 +137,9 @@ function ChatScreen({ chat, messages }) {
           type="submit"
           onClick={sendMesssage}
         ></button>
-        <EmoteContainer>
-        <Mic />
-        </EmoteContainer>
+        <ResponsibleDesign>
+          <Mic />
+        </ResponsibleDesign>
       </InputContainer>
     </Container>
   );
@@ -149,26 +158,28 @@ const Input = styled.input`
   margin-right: 20px;
   background-color: whitesmoke;
   width: 80%;
-  &&&{
-        @media screen and (max-width: 500px) {
-        width: 100%;
-    };
+  &&& {
+    @media screen and (max-width: 500px) {
+      width: 100%;
+      padding: 20px;
+      margin: 0;
     }
+  }
 `;
 
 const InputContainer = styled.form`
   display: flex;
   align-items: center;
   padding: 10px;
-  position: sticky;
-  bottom: 0;
+  position: absolute;
+  bottom: -3px;
   background-color: white;
-  z-index: 100;
-  width: 100%;
+  z-index: 1001;
+  width: 66.7%;
 `;
 
 const Header = styled.div`
-  position: sticky;
+  position: absolute;
   background-color: white;
   z-index: 100;
   top: 0;
@@ -176,12 +187,13 @@ const Header = styled.div`
   padding: 11px;
   align-items: center;
   border-bottom: 1px solid whitesmoke;
+  width: 66.7%;
 `;
 
 const HeaderInformation = styled.div`
   margin-left: 15px;
   flex: 1;
-
+  word-break: break-all;
   > h3 {
     margin-bottom: 3px;
   }
@@ -192,34 +204,29 @@ const HeaderInformation = styled.div`
   }
 `;
 
-const HeaderIcons = styled.div`
-`;
+const HeaderIcons = styled.div``;
 
 const EndOfMessages = styled.div`
-margin-bottom: 50px;
+  margin-bottom: 50px;
 `;
 
 const MessageContainer = styled.div`
   padding: 30px;
   background-color: #e5ded8;
   min-height: 90vh;
-  z-index:1000;
+  z-index: 1000;
 
-  &&&{
-        @media screen and (max-width: 500px) {
-          padding: 5px;
-    };
+  &&& {
+    @media screen and (max-width: 500px) {
+      padding: 5px;
     }
-    
+  }
 `;
 
-
-const EmoteContainer = styled.div`
-
-&&&{
-        @media screen and (max-width: 500px) {
-        display: none;
-    };
+const ResponsibleDesign = styled.div`
+  &&& {
+    @media screen and (max-width: 500px) {
+      display: none;
     }
-    
-  `;
+  }
+`;
