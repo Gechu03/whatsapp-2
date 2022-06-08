@@ -71,8 +71,8 @@ const Container = styled.div`
   flex: 0.5;
   border-right: 1px solid whitesmoke;
   height: 100vh;
-  min-width: 50px;
-  max-width: 200px;
+  min-width: 10%;
+  max-width: 35%;
   overflow-y: scroll;
   
   ::-webkit-scrollbar {

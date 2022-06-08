@@ -18,6 +18,7 @@ function Message({user, message}) {
 export default Message
 
 const Container = styled.div`
+
 `;
 
 const MessageElement = styled.p`
@@ -35,11 +36,15 @@ const MessageElement = styled.p`
 const Sender = styled(MessageElement)`
   margin-left: auto;
   background-color: #dcf8c6;
+  max-width: 50%;
+  word-wrap:break-word;
 `;
 
 const Reciber = styled(MessageElement)`
   background-color: whitesmoke;
   text-align: left;
+  max-width: 50%;
+  word-wrap:break-word;
 `;
 
 const TimeStamp = styled.span`

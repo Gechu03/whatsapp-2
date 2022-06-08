@@ -118,7 +118,9 @@ function ChatScreen({ chat, messages }) {
       </MessageContainer>
 
       <InputContainer>
+      <EmoteContainer>
         <InsertEmoticon />
+      </EmoteContainer>
         <Input value={input} onChange={(e) => setInput(e.target.value)} />
         <button
           hidden
@@ -126,7 +128,9 @@ function ChatScreen({ chat, messages }) {
           type="submit"
           onClick={sendMesssage}
         ></button>
+        <EmoteContainer>
         <Mic />
+        </EmoteContainer>
       </InputContainer>
     </Container>
   );
@@ -144,6 +148,12 @@ const Input = styled.input`
   margin-left: 15px;
   margin-right: 20px;
   background-color: whitesmoke;
+  width: 80%;
+  &&&{
+        @media screen and (max-width: 500px) {
+        width: 100%;
+    };
+    }
 `;
 
 const InputContainer = styled.form`
@@ -154,6 +164,7 @@ const InputContainer = styled.form`
   bottom: 0;
   background-color: white;
   z-index: 100;
+  width: 100%;
 `;
 
 const Header = styled.div`
@@ -193,4 +204,22 @@ const MessageContainer = styled.div`
   background-color: #e5ded8;
   min-height: 90vh;
   z-index:1000;
+
+  &&&{
+        @media screen and (max-width: 500px) {
+          padding: 5px;
+    };
+    }
+    
 `;
+
+
+const EmoteContainer = styled.div`
+
+&&&{
+        @media screen and (max-width: 500px) {
+        display: none;
+    };
+    }
+    
+  `;

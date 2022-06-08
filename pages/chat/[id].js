@@ -59,6 +59,7 @@ export async function getServerSideProps(context) {
 
 const Container = styled.div`
   display: flex;
+  
 `;
 
 const ChatContainer = styled.div`
