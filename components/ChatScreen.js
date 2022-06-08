@@ -147,7 +147,9 @@ function ChatScreen({ chat, messages }) {
 
 export default ChatScreen;
 
-const Container = styled.div``;
+const Container = styled.div`
+
+`;
 const Input = styled.input`
   flex: 1;
   outline: 0;
@@ -179,15 +181,19 @@ const InputContainer = styled.form`
 `;
 
 const Header = styled.div`
-  position: absolute;
+&&&{
+  position: sticky;
+}
+  
   background-color: white;
-  z-index: 100;
+  z-index: 10002;
   top: 0;
   display: flex;
   padding: 11px;
   align-items: center;
   border-bottom: 1px solid whitesmoke;
-  width: 66.7%;
+  width: 100%;
+  height: 15%;
 `;
 
 const HeaderInformation = styled.div`
@@ -214,11 +220,10 @@ const MessageContainer = styled.div`
   padding: 30px;
   background-color: #e5ded8;
   min-height: 90vh;
-  z-index: 1000;
-
+  z-index: 10;
   &&& {
     @media screen and (max-width: 500px) {
-      padding: 5px;
+      padding:5px 5px  50px 5px;
     }
   }
 `;
