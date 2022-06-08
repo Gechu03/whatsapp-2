@@ -55,7 +55,7 @@ function ChatScreen({ chat, messages }) {
   const scrollToBottom = () => {
     endOfMessagesRef.current.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "center",
     })
   }
 

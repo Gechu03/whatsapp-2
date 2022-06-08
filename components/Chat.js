@@ -38,14 +38,22 @@ const Container = styled.div`
     align-items: center;
     cursor: pointer;
     padding: 15px;
-    word-break: break-word;
-
+    
+    
     :hover {
         background-color: #e9eaeb;
     }
+
+    
 `;
 
 const UserAvatar = styled(Avatar)`
     margin: 5px;
     margin-right: 15px;
+    &&&{
+        @media screen and (max-width: 500px) {
+        display: none;
+    };
+    }
+    
 `;

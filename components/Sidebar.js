@@ -71,10 +71,10 @@ const Container = styled.div`
   flex: 0.5;
   border-right: 1px solid whitesmoke;
   height: 100vh;
-  min-width: 300px;
-  max-width: 350px;
+  min-width: 50px;
+  max-width: 200px;
   overflow-y: scroll;
-  word-wrap:break-word;
+  
   ::-webkit-scrollbar {
     display:none;
   };
@@ -112,9 +112,17 @@ const UserAvatar = styled(Avatar)`
   :hover {
     opacity: 0.8;
   }
+
+  
 `;
 
-const IconsContainer = styled.div``;
+const IconsContainer = styled.div`
+&&&{
+        @media screen and (max-width: 500px) {
+        display: none;
+    };
+    }
+`;
 
 const SearchContainer = styled.div`
   display:flex;
