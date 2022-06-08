@@ -173,7 +173,7 @@ const InputContainer = styled.form`
   display: flex;
   align-items: center;
   padding: 10px;
-  position: absolute;
+  position: fixed;
   bottom: -3px;
   background-color: white;
   z-index: 1001;
