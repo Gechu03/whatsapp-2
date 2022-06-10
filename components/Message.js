@@ -151,8 +151,14 @@ const StyledPopup = styled(Popup)`
     font-size: 25px;
     padding: 10px;
     align-items:center;
-    
+    &&& {
+    @media screen and (max-width: 500px) {
+      padding: 0px;
+      font-size: 17px;
+    }
+  }
   };
+  
 `;
 
 const UserAvatar = styled(Avatar)`
