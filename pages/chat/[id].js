@@ -17,7 +17,7 @@ function Chat({chat, messages}) {
       </Head>
       <Sidebar />
       <ChatContainer>
-        <ChatScreen chat={chat} messages={messages} />
+        <ChatScreen chat={chat} messages={messages}/>
       </ChatContainer>
     </Container>
   );
@@ -38,7 +38,8 @@ export async function getServerSideProps(context) {
         ...doc.data()
     })).map(messages => ({
         ...messages,
-        timestamp: messages.timestamp.toDate().getTime()
+        timestamp: messages.timestamp.toDate().getTime(),
+        reactedAt: messages.timestamp.toDate().getTime(),
     }));
 
     // PREP the CHATS

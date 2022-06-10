@@ -1,17 +1,19 @@
 import moment from "moment";
-import Head from "next/head";
 import Image from "next/image";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection } from "react-firebase-hooks/firestore";
 import styled from "styled-components"
 import { auth, db } from "../firebase";
 import blue from '../public/img/blue.png';
 import gray from '../public/img/gray.png';
 import { useRouter } from "next/router";
 import firebase from "firebase/compat/app";
+import Popup from 'reactjs-popup';
+import { Avatar } from "@material-ui/core";
 
-function Message({user, message}) {
+function Message({message, avatar}) {
+  let muestra;
   const router = useRouter();
+
   const [userLoggedIn] = useAuthState(auth);
   let TypeOfMessages = (message.user === userLoggedIn.email) ? Sender : Reciber;
   let Readed = message.beenReaded;
@@ -24,44 +26,53 @@ function Message({user, message}) {
       )
     }
     
-  }
-  const mostrarInformacionMensaje = () => {
-    if(message.user === userLoggedIn.email){
-      let mostrarFecha = formatDate(message.reactedAt.toDate())
-      if(message.beenReaded) {
-        alert(`Message readed at: ${mostrarFecha} `)
-      }else {
-        alert("No reaccionado")
-      }
-    }
-    
+  };
+
+  const try2 = () => {
+   if(message.beenReaded){
+     muestra = "El mensaje se ha leido a las: "+ formatDate(new Date(message.timestamp));
+   }else{
+     muestra = "No ha leido el mensaje"
+   }
   };
 
   function formatDate(date) {
     return (
       [
-        date.getFullYear(),
-        padTo2Digits(date.getMonth() + 1),
-        padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
-      [
         padTo2Digits(date.getHours()),
         padTo2Digits(date.getMinutes()),
         padTo2Digits(date.getSeconds()),
-      ].join(':')
+      ].join(':')+
+      ' ' +
+      [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('-') 
+      
     );
   };
-
+  
   function padTo2Digits(num) {
     return num.toString().padStart(2, '0');
   };
 
+
   return (
     <>
-    <Container onClick={mostrarInformacionMensaje}>
-        <TypeOfMessages>{message.message} <TimeStamp>{message.timestamp ? moment(message.timestamp).format('LT') : '...'}</TimeStamp>{Readed ? (<Image src={blue} height={20} width={20}/>) : (<Image src={gray} height={20} width={20}/>)}</TypeOfMessages>
-    </Container>
+    <Container>
+      {userLoggedIn.email === message.user ? 
+      <StyledPopup
+      trigger={ <TypeOfMessages >{message.message} <TimeStamp>{message.timestamp ? moment(message.timestamp).format('LT') : '...'}</TimeStamp>{Readed ? (<Image src={blue} height={20} width={20}/>) : (<Image src={gray} height={20} width={20}/>)}</TypeOfMessages>}
+      modal
+      closeOnDocumentClick
+    >
+      {try2()}
+     <><UserAvatar src={avatar}/>{muestra}</>
+    </StyledPopup>
+      : <TypeOfMessages>{message.message} <TimeStamp>{message.timestamp ? moment(message.timestamp).format('LT') : '...'}</TimeStamp>{Readed ? (<Image src={blue} height={20} width={20}/>) : (<Image src={gray} height={20} width={20}/>)}</TypeOfMessages>}
+        
+        </Container>
     </>
   )
 }
@@ -109,7 +120,32 @@ const TimeStamp = styled.span`
 `
 
 
-const checks = styled.image`
-  width:10%;
-  height:10%;
+const StyledPopup = styled(Popup)`
+   &-overlay {
+    
+    height: 20%;
+    width: 40%;
+    background-color: white;
+    position: absolute;
+    margin-top: 20%;
+    margin-left:45%;
+    padding: 10px;
+  };
+
+  &-content {
+    display: flex;
+    font-size: 25px;
+    padding: 10px;
+  };
+`;
+
+const UserAvatar = styled(Avatar)`
+  cursor:pointer;
+  margin-right: 10px;
+  :hover {
+    
+    opacity: 0.8;
+  }
+
+  
 `;

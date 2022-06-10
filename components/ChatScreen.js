@@ -35,14 +35,19 @@ function ChatScreen({ chat, messages }) {
     if (messagesSnapshot) {
       return messagesSnapshot.docs.map(
         (message) => (
+          
           (
             <Message
               key={message.data().id}
               user={message.data()}
+              avatar={recipient?.photoURL}
               message={{
                 ...message.data(),
                 timestamp: message.data().timestamp?.toDate().getTime(),
-              }}
+                reactedAt: message.data().reactedAt?.toDate().getTime(),
+              
+              }
+              }
             />
           )
         )
@@ -76,7 +81,7 @@ function ChatScreen({ chat, messages }) {
       message: input,
       user: user.email,
       photoURL: user.photoURL,
-      reactedAt: new Date(0),
+      reactedAt: firebase.firestore.FieldValue.serverTimestamp(),
       messageId: menssageID,
       beenReaded: false,
     });
