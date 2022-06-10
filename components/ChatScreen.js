@@ -35,11 +35,10 @@ function ChatScreen({ chat, messages }) {
     if (messagesSnapshot) {
       return messagesSnapshot.docs.map(
         (message) => (
-          console.log("User passed", message.data()),
           (
             <Message
               key={message.data().id}
-              user={message.data().user}
+              user={message.data()}
               message={{
                 ...message.data(),
                 timestamp: message.data().timestamp?.toDate().getTime(),
@@ -50,7 +49,7 @@ function ChatScreen({ chat, messages }) {
       );
     } else {
       return JSON.parse(messages).map((message) => (
-        <Message key={message.id} user={message.user} message={message} />
+        <Message key={message.id} user={message.user} message={message}/>
       ));
     }
   };
@@ -70,12 +69,16 @@ function ChatScreen({ chat, messages }) {
       },
       { merge: true }
     );
-
-    db.collection("chats").doc(router.query.id).collection("messages").add({
+   
+      let menssageID = user.uid + "" + Date.now();
+    db.collection("chats").doc(router.query.id).collection("messages").doc(menssageID).set({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       message: input,
       user: user.email,
       photoURL: user.photoURL,
+      reactedAt: new Date(0),
+      messageId: menssageID,
+      beenReaded: false,
     });
 
     setInput("");
@@ -84,7 +87,9 @@ function ChatScreen({ chat, messages }) {
 
   const recipient = recipientSnapshot?.docs?.[0]?.data();
   const RecipientEmail = getRecipientEmail(chat.users, user);
-  console.log("Recipient Info", recipientSnapshot);
+
+
+
   return (
     <Container>
 

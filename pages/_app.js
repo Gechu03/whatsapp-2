@@ -15,6 +15,7 @@ function MyApp({ Component, pageProps }) {
         email: user.email,
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
         photoURL: user.photoURL,
+        reactedAt: new Date(0),
       }, {merge: true})
     }
   }, [user])
