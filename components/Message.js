@@ -130,12 +130,28 @@ const StyledPopup = styled(Popup)`
     margin-top: 20%;
     margin-left:45%;
     padding: 10px;
+
+    &&& {
+    @media screen and (max-width: 500px) {
+      position: fixed;
+      width: 60%;
+      padding: 20px;
+      margin: 0;
+      height: 35%;
+      overflow: hidden;
+      justify-content:center;
+      margin-top: 50%;
+      margin-left: 36%
+    }
+  }
   };
 
   &-content {
     display: flex;
     font-size: 25px;
     padding: 10px;
+    align-items:center;
+    
   };
 `;
 
