@@ -26,7 +26,7 @@ function Message({user, message}) {
     
   }
   const mostrarInformacionMensaje = () => {
-    if(message.user === userLoggedIn.email){
+    if(message.user !== userLoggedIn.email){
       let mostrarFecha = formatDate(message.reactedAt.toDate())
       if(message.beenReaded) {
         alert(`Message readed at: ${mostrarFecha} `)
