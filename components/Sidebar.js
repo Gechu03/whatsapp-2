@@ -9,6 +9,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { auth, db } from "../firebase";
 import Chat from "./Chat";
 import { useState } from "react";
+import Popup from "reactjs-popup";
 
 function Sidebar() {
   const [user] = useAuthState(auth);
@@ -17,21 +18,18 @@ function Sidebar() {
     .where("users", "array-contains", user.email);
   const [chatsSnapshot] = useCollection(userChatRef);
   const [search, setSearch] = useState("");
-  const [open, setOpen] = useState(false);
-  const createChat = () => {
-    const input = prompt(
-      "Please enter an email addres for the user you wish to chat with"
-    );
+  const [crearChat, setCrearChat] = useState(false);
 
-    if (!input) return null;
+  const createChat = () => {
+    if (!crearChat) return null;
 
     if (
-      EmailValidator.validate(input) &&
-      !chatAlreadyExists(input) &&
-      input !== user.email
+      EmailValidator.validate(crearChat) &&
+      !chatAlreadyExists(crearChat) &&
+      crearChat !== user.email
     ) {
       db.collection("chats").add({
-        users: [user.email, input],
+        users: [user.email, crearChat],
       });
     }
   };
@@ -44,22 +42,37 @@ function Sidebar() {
 
   return (
     <Container>
-      <Header>
+      <Header >
         <UserAvatar src={user.photoURL} onClick={() => auth.signOut()} />
         <IconsContainer>
           <IconButton>
-            <ChatIcon onClick={createChat} />
-          </IconButton>
-          <IconButton>
-            <MoreVert />
+            <MoreVert/>
           </IconButton>
         </IconsContainer>
       </Header>
       {/* Create chat */}
 
-        <SidebarButton onClick={createChat}>Start a new Chat</SidebarButton>
-      
-      
+      <StyledPopup
+        trigger={<SidebarButton>Start a new Chat</SidebarButton>}
+        modal
+        closeOnDocumentClick
+      >
+        <SearchContainer>
+          <ChatIcon />
+          <SearchInput1
+            type="text"
+            placeholder="Search..."
+            onChange={(event) => {
+              setCrearChat(event.target.value);
+            }}
+            onKeyPress={(event) => {
+              if (event.key === "Enter") {
+                createChat();
+              }
+            }}
+          />
+        </SearchContainer>
+      </StyledPopup>
 
       <SearchContainer>
         <Search />
@@ -90,22 +103,6 @@ function Sidebar() {
   );
 }
 
-// <InputContainer>
-//         <ResponsibleDesign>
-//           <InsertEmoticon />
-//         </ResponsibleDesign>
-//         <Input value={input} onChange={(e) => setInput(e.target.value)} />
-//         <button
-//           hidden
-//           disabled={!input}
-//           type="submit"
-//           onClick={sendMesssage}
-//         ></button>
-//         <ResponsibleDesign>
-//           <Mic />
-//         </ResponsibleDesign>
-//       </InputContainer>
-
 export default Sidebar;
 
 const Container = styled.div`
@@ -115,7 +112,7 @@ const Container = styled.div`
   min-width: 10%;
   max-width: 35%;
   overflow-y: scroll;
-  
+
   ::-webkit-scrollbar {
     display: none;
   }
@@ -173,4 +170,51 @@ const SearchInput = styled.input`
   border: none;
   flex: 1;
   padding-left: 1%;
+`;
+
+const SearchInput1 = styled.input`
+  outline-width: 1;
+  border: 2px solid whitesmoke;
+  flex: 1;
+  padding-left: 1%;
+  padding: 10px;
+`;
+
+const StyledPopup = styled(Popup)`
+  &-overlay {
+    height: 20%;
+    width: 40%;
+    background-color: white;
+    position: absolute;
+    margin-top: 20%;
+    margin-left: 45%;
+    padding: 10px;
+
+    &&& {
+      @media screen and (max-width: 500px) {
+        position: fixed;
+        width: 60%;
+        padding: 20px;
+        margin: 0;
+        height: 35%;
+        overflow: hidden;
+        justify-content: center;
+        margin-top: 50%;
+        margin-left: 36%;
+      }
+    }
+  }
+
+  &-content {
+    display: flex;
+    font-size: 25px;
+    padding: 10px;
+    align-items: center;
+    &&& {
+      @media screen and (max-width: 500px) {
+        padding: 0px;
+        font-size: 17px;
+      }
+    }
+  }
 `;

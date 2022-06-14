@@ -4,14 +4,16 @@ import { auth, db } from "../firebase";
 import { useRouter } from "next/router";
 import { Avatar, IconButton } from "@material-ui/core";
 import { InsertEmoticon, MoreVert } from "@material-ui/icons";
+import SendIcon from '@material-ui/icons/send';
 import { AttachFile } from "@material-ui/icons";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Mic from "@material-ui/icons/Mic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import firebase from "firebase/compat/app";
 import Message from "./Message";
 import getRecipientEmail from "../utils/getRecipientEmail";
 import TimeAgo from "timeago-react";
+import InputEmoji from "react-input-emoji";
 
 function ChatScreen({ chat, messages }) {
   const [user] = useAuthState(auth);
@@ -31,6 +33,9 @@ function ChatScreen({ chat, messages }) {
       .collection("users")
       .where("email", "==", getRecipientEmail(chat.users, user))
   );
+
+  
+
   const showMessages = () => {
     if (messagesSnapshot) {
       return messagesSnapshot.docs.map((message) => (
@@ -60,7 +65,7 @@ function ChatScreen({ chat, messages }) {
   };
 
   const sendMesssage = (e) => {
-    // Update the last seen
+   
     db.collection("users").doc(user.uid).set(
       {
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
@@ -133,19 +138,11 @@ function ChatScreen({ chat, messages }) {
       </MessageContainer>
 
       <InputContainer>
-        <ResponsibleDesign>
-          <InsertEmoticon />
-        </ResponsibleDesign>
-        <Input value={input} onChange={(e) => setInput(e.target.value)} />
-        <button
-          hidden
-          disabled={!input}
-          type="submit"
+      
+        <InputEmoji value={input} onChange={(e) => setInput(e)} />
+        <SendIcon
           onClick={sendMesssage}
-        ></button>
-        <ResponsibleDesign>
-          <Mic />
-        </ResponsibleDesign>
+        ></SendIcon>
       </InputContainer>
     </Container>
   );
