@@ -33,28 +33,21 @@ function ChatScreen({ chat, messages }) {
   );
   const showMessages = () => {
     if (messagesSnapshot) {
-      return messagesSnapshot.docs.map(
-        (message) => (
-          
-          (
-            <Message
-              key={message.data().id}
-              user={message.data()}
-              avatar={recipient?.photoURL}
-              message={{
-                ...message.data(),
-                timestamp: message.data().timestamp?.toDate().getTime(),
-                reactedAt: message.data().reactedAt?.toDate().getTime(),
-              
-              }
-              }
-            />
-          )
-        )
-      );
+      return messagesSnapshot.docs.map((message) => (
+        <Message
+          key={message.data().id}
+          user={message.data()}
+          avatar={recipient?.photoURL}
+          message={{
+            ...message.data(),
+            timestamp: message.data().timestamp?.toDate().getTime(),
+            reactedAt: message.data().reactedAt?.toDate().getTime(),
+          }}
+        />
+      ));
     } else {
       return JSON.parse(messages).map((message) => (
-        <Message key={message.id} user={message.user} message={message}/>
+        <Message key={message.id} user={message.user} message={message} />
       ));
     }
   };
@@ -74,17 +67,21 @@ function ChatScreen({ chat, messages }) {
       },
       { merge: true }
     );
-   
-      let menssageID = user.uid + "" + Date.now();
-    db.collection("chats").doc(router.query.id).collection("messages").doc(menssageID).set({
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      message: input,
-      user: user.email,
-      photoURL: user.photoURL,
-      reactedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      messageId: menssageID,
-      beenReaded: false,
-    });
+
+    let menssageID = user.uid + "" + Date.now();
+    db.collection("chats")
+      .doc(router.query.id)
+      .collection("messages")
+      .doc(menssageID)
+      .set({
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        message: input,
+        user: user.email,
+        photoURL: user.photoURL,
+        reactedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        messageId: menssageID,
+        beenReaded: false,
+      });
 
     setInput("");
     scrollToBottom();
@@ -93,19 +90,16 @@ function ChatScreen({ chat, messages }) {
   const recipient = recipientSnapshot?.docs?.[0]?.data();
   const RecipientEmail = getRecipientEmail(chat.users, user);
 
-
-
   return (
     <Container>
-
       <Header>
-      <ResponsibleDesign>
-        {recipient ? (
-          <Avatar src={recipient?.photoURL} />
-        ) : (
-          <Avatar>{RecipientEmail[0]}</Avatar>
-        )}
-      </ResponsibleDesign>
+        <ResponsibleDesign>
+          {recipient ? (
+            <Avatar src={recipient?.photoURL} />
+          ) : (
+            <Avatar>{RecipientEmail[0]}</Avatar>
+          )}
+        </ResponsibleDesign>
         <HeaderInformation>
           <h3>{RecipientEmail}</h3>
           {recipientSnapshot ? (
@@ -122,12 +116,14 @@ function ChatScreen({ chat, messages }) {
           )}
         </HeaderInformation>
         <ResponsibleDesign>
-        <HeaderIcons>
-          <IconButton>
-            <AttachFile />
-            <MoreVert />
-          </IconButton>
-        </HeaderIcons>
+          <HeaderIcons>
+            <IconButton>
+              <AttachFile />
+            </IconButton>
+            <IconButton>
+              <MoreVert />
+            </IconButton>
+          </HeaderIcons>
         </ResponsibleDesign>
       </Header>
 
@@ -157,9 +153,7 @@ function ChatScreen({ chat, messages }) {
 
 export default ChatScreen;
 
-const Container = styled.div`
-
-`;
+const Container = styled.div``;
 const Input = styled.input`
   flex: 1;
   outline: 0;
@@ -191,10 +185,10 @@ const InputContainer = styled.form`
 `;
 
 const Header = styled.div`
-&&&{
-  position: sticky;
-}
-  
+  &&& {
+    position: sticky;
+  }
+
   background-color: white;
   z-index: 10002;
   top: 0;
@@ -233,7 +227,7 @@ const MessageContainer = styled.div`
   z-index: 10;
   &&& {
     @media screen and (max-width: 500px) {
-      padding:5px 5px  50px 5px;
+      padding: 5px 5px 50px 5px;
     }
   }
 `;
