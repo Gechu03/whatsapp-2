@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { auth, db } from "../firebase";
 import { useRouter } from "next/router";
 import { Avatar, IconButton } from "@material-ui/core";
-import { InsertEmoticon, MoreVert } from "@material-ui/icons";
-import SendIcon from '@material-ui/icons/send';
+import { MoreVert } from "@material-ui/icons";
+import { Send } from '@material-ui/icons';
 import { AttachFile } from "@material-ui/icons";
 import { useCollection } from "react-firebase-hooks/firestore";
-import Mic from "@material-ui/icons/Mic";
 import { useEffect, useRef, useState } from "react";
 import firebase from "firebase/compat/app";
 import Message from "./Message";
@@ -140,9 +139,9 @@ function ChatScreen({ chat, messages }) {
       <InputContainer>
       
         <InputEmoji value={input} onChange={(e) => setInput(e)} />
-        <SendIcon
+        <Send
           onClick={sendMesssage}
-        ></SendIcon>
+        ></Send>
       </InputContainer>
     </Container>
   );
