@@ -1,26 +1,28 @@
-import { Avatar, Button, IconButton } from "@material-ui/core";
-import styled from "styled-components";
-import ChatIcon from "@material-ui/icons/Chat";
-import MoreVert from "@material-ui/icons/MoreVert";
-import Search from "@material-ui/icons/Search";
-import * as EmailValidator from "email-validator";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { auth, db } from "../firebase";
-import Chat from "./Chat";
-import { useState } from "react";
-import Popup from "reactjs-popup";
+import { Avatar, Button, IconButton } from '@material-ui/core';
+import styled from 'styled-components';
+import ChatIcon from '@material-ui/icons/Chat';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import MoreVert from '@material-ui/icons/MoreVert';
+import Search from '@material-ui/icons/Search';
+import * as EmailValidator from 'email-validator';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { auth, db } from '../firebase';
+import Chat from './Chat';
+import { useState } from 'react';
+import Popup from 'reactjs-popup';
 
 function Sidebar() {
   const [user] = useAuthState(auth);
   const userChatRef = db
-    .collection("chats")
-    .where("users", "array-contains", user.email);
+    .collection('chats')
+    .where('users', 'array-contains', user.email);
   const [chatsSnapshot] = useCollection(userChatRef);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState(null);
   const [crearChat, setCrearChat] = useState(false);
 
-  const createChat = () => {
+  const createChat = (close) => {
     if (!crearChat) return null;
 
     if (
@@ -28,9 +30,13 @@ function Sidebar() {
       !chatAlreadyExists(crearChat) &&
       crearChat !== user.email
     ) {
-      db.collection("chats").add({
+      db.collection('chats').add({
         users: [user.email, crearChat],
       });
+      setError(null);
+      close();
+    } else {
+      setError('Email Incorrecto');
     }
   };
 
@@ -42,11 +48,11 @@ function Sidebar() {
 
   return (
     <Container>
-      <Header >
+      <Header>
         <UserAvatar src={user.photoURL} onClick={() => auth.signOut()} />
         <IconsContainer>
           <IconButton>
-            <MoreVert/>
+            <MoreVert />
           </IconButton>
         </IconsContainer>
       </Header>
@@ -57,21 +63,29 @@ function Sidebar() {
         modal
         closeOnDocumentClick
       >
-        <SearchContainer>
-          <ChatIcon />
-          <SearchInput1
-            type="text"
-            placeholder="Search..."
-            onChange={(event) => {
-              setCrearChat(event.target.value);
-            }}
-            onKeyPress={(event) => {
-              if (event.key === "Enter") {
-                createChat();
-              }
-            }}
-          />
-        </SearchContainer>
+        {(close) => (
+          <SearchContainer>
+            <ChatIcon />
+            <SearchInput1
+              type="text"
+              placeholder="Search..."
+              onChange={(event) => {
+                setCrearChat(event.target.value);
+              }}
+              onKeyPress={(event) => {
+                if (event.key === 'Enter') {
+                  createChat(close);
+                }
+              }}
+            />
+            <ArrowForwardIcon
+              onClick={() => {
+                createChat(close);
+              }}
+            />
+            <EmailError>{error}</EmailError>
+          </SearchContainer>
+        )}
       </StyledPopup>
 
       <SearchContainer>
@@ -129,7 +143,10 @@ const SidebarButton = styled(Button)`
     border-bottom: 1px solid whitesmoke;
   }
 `;
-
+const EmailError = styled.div`
+  color: red;
+  font-size: 12px;
+`;
 const Header = styled.div`
   display: flex;
   position: sticky;
@@ -162,7 +179,11 @@ const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 20px;
-  border-radius: 2px;
+  border-radius: 4px;
+  background-color: white;
+  flex-wrap: wrap;
+  max-width: 350px;
+  gap: 12px;
 `;
 
 const SearchInput = styled.input`
@@ -182,25 +203,23 @@ const SearchInput1 = styled.input`
 
 const StyledPopup = styled(Popup)`
   &-overlay {
-    height: 20%;
-    width: 40%;
-    background-color: white;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
     position: absolute;
-    margin-top: 20%;
-    margin-left: 45%;
     padding: 10px;
 
     &&& {
       @media screen and (max-width: 500px) {
         position: fixed;
-        width: 60%;
+        width: 100%;
         padding: 20px;
         margin: 0;
-        height: 35%;
+        height: 100%;
         overflow: hidden;
         justify-content: center;
-        margin-top: 50%;
-        margin-left: 36%;
+        top: 0%;
+        left: 0%;
       }
     }
   }

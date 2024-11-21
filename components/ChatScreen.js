@@ -1,18 +1,18 @@
-import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
-import { auth, db } from "../firebase";
-import { useRouter } from "next/router";
-import { Avatar, IconButton } from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import styled from 'styled-components';
+import { auth, db } from '../firebase';
+import { useRouter } from 'next/router';
+import { Avatar, IconButton } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 import { Send } from '@material-ui/icons';
-import { AttachFile } from "@material-ui/icons";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { useEffect, useRef, useState } from "react";
-import firebase from "firebase/compat/app";
-import Message from "./Message";
-import getRecipientEmail from "../utils/getRecipientEmail";
-import TimeAgo from "timeago-react";
-import InputEmoji from "react-input-emoji";
+import { AttachFile } from '@material-ui/icons';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { useEffect, useRef, useState } from 'react';
+import firebase from 'firebase/compat/app';
+import Message from './Message';
+import getRecipientEmail from '../utils/getRecipientEmail';
+import TimeAgo from 'timeago-react';
+import InputEmoji from 'react-input-emoji';
 
 function ChatScreen({ chat, messages }) {
   const [user] = useAuthState(auth);
@@ -21,19 +21,17 @@ function ChatScreen({ chat, messages }) {
 
   const [messagesSnapshot] = useCollection(
     db
-      .collection("chats")
+      .collection('chats')
       .doc(router.query.id)
-      .collection("messages")
-      .orderBy("timestamp", "asc")
+      .collection('messages')
+      .orderBy('timestamp', 'asc')
   );
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [recipientSnapshot] = useCollection(
     db
-      .collection("users")
-      .where("email", "==", getRecipientEmail(chat.users, user))
+      .collection('users')
+      .where('email', '==', getRecipientEmail(chat.users, user))
   );
-
-  
 
   const showMessages = () => {
     if (messagesSnapshot) {
@@ -58,24 +56,23 @@ function ChatScreen({ chat, messages }) {
 
   const scrollToBottom = () => {
     endOfMessagesRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
+      behavior: 'smooth',
+      block: 'center',
     });
   };
 
   const sendMesssage = (e) => {
-   
-    db.collection("users").doc(user.uid).set(
+    db.collection('users').doc(user.uid).set(
       {
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
       },
       { merge: true }
     );
 
-    let menssageID = user.uid + "" + Date.now();
-    db.collection("chats")
+    let menssageID = user.uid + '' + Date.now();
+    db.collection('chats')
       .doc(router.query.id)
-      .collection("messages")
+      .collection('messages')
       .doc(menssageID)
       .set({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -87,7 +84,7 @@ function ChatScreen({ chat, messages }) {
         beenReaded: false,
       });
 
-    setInput("");
+    setInput('');
     scrollToBottom();
   };
 
@@ -108,11 +105,11 @@ function ChatScreen({ chat, messages }) {
           <h3>{RecipientEmail}</h3>
           {recipientSnapshot ? (
             <p>
-              Last active:{" "}
+              Last active:{' '}
               {recipient?.lastSeen?.toDate() ? (
                 <TimeAgo datetime={recipient?.lastSeen?.toDate()} />
               ) : (
-                "Unavailable"
+                'Unavailable'
               )}
             </p>
           ) : (
@@ -137,11 +134,12 @@ function ChatScreen({ chat, messages }) {
       </MessageContainer>
 
       <InputContainer>
-      
-        <InputEmoji value={input} onChange={(e) => setInput(e)} />
-        <Send
-          onClick={sendMesssage}
-        ></Send>
+        <InputEmoji
+          onEnter={sendMesssage}
+          value={input}
+          onChange={(e) => setInput(e)}
+        />
+        <Send onClick={sendMesssage}></Send>
       </InputContainer>
     </Container>
   );
@@ -176,7 +174,7 @@ const InputContainer = styled.form`
   position: fixed;
   bottom: -3px;
   background-color: white;
-  z-index: 1001;
+  z-index: 900;
   width: 66.7%;
 `;
 
@@ -194,6 +192,7 @@ const Header = styled.div`
   border-bottom: 1px solid whitesmoke;
   width: 100%;
   height: 15%;
+  z-index: 10;
 `;
 
 const HeaderInformation = styled.div`
