@@ -15,7 +15,7 @@ function login() {
       </Head>
 
       <LoginContainer>
-        <Logo src="/img/ChatChat.jpg" />
+        <Logo src="/img/ChitChat.jpg" />
         <Button onClick={signIn} variant="outlined">
           Sign in with Google
         </Button>
